@@ -1,0 +1,4 @@
+# Do zrobienia
+# Zmodyfikować Quote.js tak, zeby wyswietalo tekst zamiast grafiki zombie
+# Podlaczyc sie pod API Rapid w celu zbierania losowych cytatow
+# Przy pojawieniu sie nowego cytatu dzwiek
