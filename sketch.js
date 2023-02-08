@@ -34,6 +34,22 @@ function preload() {
   myFont = loadFont('assets/NeueHaasUnica-Bold.ttf');
 }
 
+
+function resetGame() {
+  // Create new object of journalist - I will do it only once
+  journalist = new Journalist();
+  score = 0;
+  quotes.splice(0, quotes.length)
+
+  framesTillCreate = 100;
+  frame = 0;
+  speed = 2;
+
+  // Before we create the quotes from "framesTillCreate" we add initial quote so that there is a quote at the beginning of the game
+  quotes.push(new Quote(random(speed), quotesContents[0][Math.floor(Math.random()*quotesContents[0].length)]['text']));
+
+}
+
 function setup() {
 
   // Make canvas full screen
@@ -41,15 +57,12 @@ function setup() {
   // Set's the way we calculate the position of images
   // AS explained here: https://p5js.org/reference/#/p5/imageMode
   imageMode(CENTER);
-  // Create new object of journalist - I will do it only once
-  journalist = new Journalist();
   // Loads assets for journalist, background (here land) and hashtag
   journalistImg = loadImage("assets/player.png");
   landImg = loadImage("assets/background.png");
   hashtagImg = loadImage("assets/hashtag.png")
 
-  // Before we create the quotes from "framesTillCreate" we add initial quote so that there is a quote at the beginning of the game
-  quotes.push(new Quote(random(speed), quotesContents[0][Math.floor(Math.random()*quotesContents[0].length)]['text']));
+  resetGame()
 
   // Play music in the background as explained here: https://www.youtube.com/watch?v=uHNgkQsHLXQ
   backgroundMusic();
@@ -77,22 +90,24 @@ function draw() {
   journalist.update();
   
   // Each frame draw all of the quotes and update its position based on the journalist position
-  for (let i = quotes.length - 1; i >= 0; i--) {
-    quotes[i].draw();
-    quotes[i].update();
+  if (quotes.length > 0) {
+    for (let i = quotes.length - 1; i >= 0; i--) {
+      quotes[i].draw();
+      quotes[i].update();
 
-    // Check if quote hit journalist by iterating over quotes positions
-    if (journalist.die(quotes[i])) {
-      // If journalist is hit by a quote then restart the game
-      reset();
-    }
-    
-    // Check if quote is hit by iterating over quotes positions
-    if (journalist.shot(quotes[i])) {
-      // If quote is hit by hashtag delete certain element with i index from quote array
-      quotes.splice(i, 1);
-      // If hit increment score by one
-      score++;
+      // Check if quote hit journalist by iterating over quotes positions
+      if (journalist.die(quotes[i])) {
+        // If journalist is hit by a quote then restart the game
+        resetGame();
+      }
+      
+      // Check if quote is hit by iterating over quotes positions
+      if (journalist.shot(quotes[i])) {
+        // If quote is hit by hashtag delete certain element with i index from quote array
+        quotes.splice(i, 1);
+        // If hit increment score by one
+        score++;
+      }
     }
   }
   
